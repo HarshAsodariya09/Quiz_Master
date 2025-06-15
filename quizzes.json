@@ -1,0 +1,44 @@
+{
+  "2a25e3cd": {
+    "roomId": "2a25e3cd",
+    "title": "vvlkavjelvenlaev",
+    "subject": "programming",
+    "difficulty": "easy",
+    "duration": 5,
+    "questionCount": 3,
+    "allowLateJoin": true,
+    "quiz": [
+      {
+        "question": "cnalemm",
+        "options": [
+          "aa",
+          "cae",
+          "cea",
+          "cea"
+        ],
+        "correctAnswer": 2
+      },
+      {
+        "question": "nac;lkea",
+        "options": [
+          "cea",
+          "ackeja",
+          "c ae;",
+          "cnelk;a"
+        ],
+        "correctAnswer": 1
+      },
+      {
+        "question": "ln",
+        "options": [
+          "l",
+          "lvjklvela",
+          "ceal;c",
+          "cea"
+        ],
+        "correctAnswer": 2
+      }
+    ],
+    "createdAt": "2025-06-15T11:30:57.072Z"
+  }
+}

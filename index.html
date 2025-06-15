@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Master - Test Your Knowledge</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/quiz.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fas fa-brain"></i>
+            <span>Quiz Master</span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html" class="active">Home</a>
+        </div>
+        <div class="nav-actions">
+            <button id="theme-toggle" class="theme-toggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </nav>
+
+    <main>
+        <!-- New Login Section -->
+        <section id="login-section" class="login-section">
+            <h2>Enter Your Nickname</h2>
+            <input type="text" id="nickname-input" placeholder="Nickname" />
+            <button id="nickname-submit" class="btn" disabled>Continue</button>
+        </section>
+
+        <!-- New Mode Selection Section -->
+        <section id="mode-section" class="mode-section" style="display: none;">
+            <h1 class="mode-title">Test Your Knowledge</h1>
+            <p class="mode-instruction">Choose how you'd like to play:</p>
+            <button id="mode-inbuilt" class="btn">Inbuilt Quiz</button>
+            <button id="mode-create" class="btn">Create Quiz</button>
+            <button id="mode-join" class="btn">Join Quiz</button>
+        </section>
+        <!-- Join Room Section -->
+        <section id="join-room-section" class="join-room-section" style="display: none;">
+            <h2>Join a Quiz Room</h2>
+            <input type="text" id="join-room-input" placeholder="Enter Room Code" />
+            <button id="join-room-btn" class="btn btn-primary">Join</button>
+        </section>
+
+        <!-- Quiz Setup Section for Inbuilt Quiz -->
+        <section id="quiz-setup" class="quiz-setup" style="display: none;">
+            <h2 class="setup-title">Choose a Category</h2>
+            <p class="setup-instruction">Pick a category and difficulty level to start the quiz</p>
+            <div class="categories" style="display: flex; gap: 1rem; margin-bottom: 1rem; justify-content:center;">
+                <button class="category btn" data-category="programming"><i class="fas fa-code"></i><span>Programming</span></button>
+                <button class="category btn" data-category="science"><i class="fas fa-flask"></i><span>Science</span></button>
+                <button class="category btn" data-category="history"><i class="fas fa-landmark"></i><span>History</span></button>
+                <button class="category btn" data-category="sports"><i class="fas fa-football-ball"></i><span>Sports</span></button>
+            </div>
+            <h2 class="setup-title">Choose Difficulty</h2>
+            <div class="difficulties" style="display: flex; gap: 1rem; margin-bottom: 1rem; justify-content:center;">
+                <button class="difficulty-btn btn" data-difficulty="easy">Easy</button>
+                <button class="difficulty-btn btn" data-difficulty="hard">Hard</button>
+            </div>
+            <button id="start-quiz" class="btn btn-primary" disabled style="margin-top:1rem;">Start Quiz</button>
+        </section>
+
+        <!-- New Create Quiz Section -->
+        <section id="create-quiz-section" class="create-quiz-section" style="display: none;">
+            <h2>Create Your Quiz</h2>
+            <div class="quiz-metadata-form">
+                <label>Quiz Title: <input id="quiz-title" type="text" /></label>
+                <label>Subject: 
+                    <select id="quiz-subject">
+                        <option value="programming">Programming</option>
+                        <option value="science">Science</option>
+                        <option value="history">History</option>
+                        <option value="sports">Sports</option>
+                    </select>
+                </label>
+                <label>Difficulty: 
+                    <select id="quiz-difficulty">
+                        <option value="easy">Easy</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </label>
+                <label>Duration (min): <input id="quiz-duration" type="number" min="1" value="5" /></label>
+                <label>Number of Questions: <input id="quiz-count" type="number" min="1" value="5" /></label>
+                <label>Allow Late Join: <input id="quiz-allow-late" type="checkbox" checked /></label>
+            </div>
+            <div id="question-form-container"></div>
+            <button id="add-question-btn" class="btn">Add Question</button>
+            <button id="generate-quiz-btn" class="btn btn-primary">Generate & Share Quiz</button>
+            <div id="share-link" style="margin-top:1rem;"></div>
+        </section>
+
+        <!-- New Lobby Section -->
+        <section id="lobby-section" class="lobby-section" style="display: none;">
+            <h2>Lobby: Room <span id="lobby-room-id"></span></h2>
+            <div id="lobby-share-link" style="margin-bottom: 1rem; text-align: center;"></div>
+            <ul id="lobby-users" class="lobby-users"></ul>
+            <!-- Lobby Settings (Host Only) -->
+            <div id="lobby-host-controls" class="lobby-settings" style="display:flex; flex-direction:column; gap:0.5rem; align-items:center;">
+                <h4>Host Controls</h4>
+                <label>Countdown (sec): <input id="lobby-countdown" type="number" min="0" value="5" /></label>
+                <label>Global Timer (min): <input id="lobby-timer" type="number" min="1" value="5" /></label>
+                <label>Allow Late Join: <input id="lobby-allow-late" type="checkbox" checked /></label>
+            </div>
+            <div id="countdown-display" style="display:none; font-size:2rem; text-align:center; margin:1rem auto;"></div>
+            <!-- Global Timer Display REMOVED from here -->
+            <button id="lobby-start-btn" class="btn btn-primary" style="display: none;">Start Quiz</button>
+        </section>
+
+        <section id="quiz-container" class="quiz-container">
+            <!-- Global Timer Display MOVED here -->
+            <div id="timer-display" style="display:none; font-size: 1.2em; margin-bottom: 10px;">00:00</div>
+            <div id="rules-section" class="quiz-section" style="display: none;">
+                <div class="rules-container">
+                    <h2>Quiz Rules</h2>
+                    <div class="rules-content">
+                        <div class="rule-item">
+                            <span class="rule-number">1</span>
+                            <p>There will be 5 questions in each section</p>
+                        </div>
+                        <div class="rule-item">
+                            <span class="rule-number">2</span>
+                            <p>You must answer all questions to see your results</p>
+                        </div>
+                        <div class="rule-item">
+                            <span class="rule-number">3</span>
+                            <p>Use the navigation buttons to move between questions</p>
+                        </div>
+                        <div class="rule-item">
+                            <span class="rule-number">4</span>
+                            <p>Click 'Confirm' to save your answer</p>
+                        </div>
+                        <div class="rule-item">
+                            <span class="rule-number">5</span>
+                            <p>You can review and change your answers before submitting</p>
+                        </div>
+                    </div>
+                    <button id="rules-start-quiz" class="btn start-btn">Start Quiz</button>
+                </div>
+            </div>
+            
+            <div id="quiz-section" class="quiz-section" style="display: none;">
+                <div class="quiz-header">
+                    <div class="quiz-info">
+                        <span id="current-question">Question 1 of 5</span>
+                        <div class="progress-bar">
+                            <div id="progress"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question-container">
+                    <h2 id="question">Question text</h2>
+                    <p id="current-question">Question x of y</p>
+                    <div id="options-container" class="options-grid"></div>
+                </div>
+                
+                <div class="navigation-buttons">
+                    <button id="prev-btn" class="btn nav-btn" disabled>Previous</button>
+                    <button id="confirm-btn" class="btn nav-btn">Confirm</button>
+                    <button id="next-btn" class="btn nav-btn">Next</button>
+                </div>
+            </div>
+            
+            <!-- Multiplayer Leaderboard -->
+            <div id="multiplayer-leaderboard" class="quiz-section" style="display: none;">
+                <h2>Leaderboard</h2>
+                <ul id="leaderboard-list" class="lobby-users"></ul>
+                <button id="host-finish-quiz-btn" class="btn btn-danger" style="display: none; margin-top: 1rem;">Finish Quiz Now</button> <!-- Added Finish Quiz Button -->
+            </div>
+
+            <div id="result-section" class="quiz-section" style="display: none;">
+                <h2>Quiz Results</h2>
+                <p>Your score: <span id="score">0</span> out of <span id="total-questions">0</span></p>
+                <h3>Final Leaderboard</h3>
+                <ul id="final-leaderboard-list" class="lobby-users"></ul> <!-- Added for final leaderboard -->
+                <button id="restart-quiz" class="btn">Restart Quiz</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Include QRCode library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <!-- Question Files -->
+    <script src="js/sports-questions-easy.js"></script>
+    <script src="js/sports-questions-hard.js"></script>
+    <script src="js/history-questions-easy.js"></script>
+    <script src="js/history-questions-hard.js"></script>
+    <script src="js/science-questions-easy.js"></script>
+    <script src="js/science-questions-hard.js"></script>
+    <script src="js/programming-questions-easy.js"></script>
+    <script src="js/programming-questions-hard.js"></script>
+    
+    <!-- Theme Logic -->
+    <script src="js/theme.js"></script>
+    <!-- Socket.IO client -->
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- Main Quiz Logic -->
+    <script src="js/quiz.js"></script>
+</body>
+</html>
